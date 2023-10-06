@@ -81,3 +81,4 @@ export default {
     updateContact: ctrlWrapper(updateContact),
     updateStatusContact: ctrlWrapper(updateStatusContact),
 }
+//for pr
