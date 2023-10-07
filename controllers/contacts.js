@@ -1,7 +1,7 @@
 import { HttpError } from "../helpers/HttpError.js";
 import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 import Contact from '../models/Contact.js';
-import { contactAddSchema, contactUpdateFavoriteSchema } from "../models/Contact.js";
+import { contactAddSchema } from "../models/Contact.js";
 
 
 const getAllContacts = async (req, res ) => {
@@ -56,7 +56,7 @@ const updateContact = async (req, res ) => {
 };
 
 const updateStatusContact = async (req, res ) => {
-        const { error } = contactUpdateFavoriteSchema.validate(req.body)
+        const { error } = contactAddSchema.validate(req.body)
         if (error) {
             throw HttpError(400, error.message)
         }
@@ -81,4 +81,3 @@ export default {
     updateContact: ctrlWrapper(updateContact),
     updateStatusContact: ctrlWrapper(updateStatusContact),
 }
-//for pr

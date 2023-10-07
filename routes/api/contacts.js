@@ -1,6 +1,6 @@
 import express from "express"
 
-import contactsController from "./../../controllers/contacts-controller.js"
+import contactsController from "../../controllers/contacts.js"
 import { isEmptyBody } from "../../middlewares/isEmptyBody.js"
 import { isValidId } from "../../middlewares/IsValidId.js"
 
