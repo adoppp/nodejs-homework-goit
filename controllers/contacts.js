@@ -1,8 +1,6 @@
 import { HttpError } from "../helpers/HttpError.js";
 import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 import Contact from '../models/Contact.js';
-import { contactAddSchema, contactFavotiteSchema } from "../models/Contact.js";
-
 
 const getAllContacts = async (req, res ) => {
         const result = await Contact.find();
@@ -19,10 +17,6 @@ const getContactById = async (req, res ) => {
 };
 
 const addContact = async (req, res ) => {
-        const { error } = contactAddSchema.validate(req.body)
-        if (error) {
-            throw HttpError(400, error.message)
-        }
         const result = await Contact.create(req.body);
         res.status(201).json(result)
 };
@@ -39,11 +33,6 @@ const deleteContact = async (req, res ) => {
 };
 
 const updateContact = async (req, res ) => {
-        const { error } = contactAddSchema.validate(req.body)
-        if (error) {
-            throw HttpError(400, error.message)
-        }
-
         const { contactId } = req.params;
 
         const result = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
@@ -56,11 +45,6 @@ const updateContact = async (req, res ) => {
 };
 
 const updateStatusContact = async (req, res ) => {
-        const { error } = contactFavotiteSchema.validate(req.body)
-        if (error) {
-            throw HttpError(400, error.message)
-        }
-
         const { contactId } = req.params;
 
         const result = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
