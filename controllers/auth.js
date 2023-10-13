@@ -61,7 +61,9 @@ const signOut = async (req, res) => {
 
     await User.findOneAndUpdate(_id, { token: "" })
     
-    res.status(204)
+    res.status(204).json({
+        message: "Sucsesfull logout"
+    })
 }
 
 const getCurrent = async (req, res) => {
