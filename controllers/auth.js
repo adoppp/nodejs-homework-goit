@@ -30,17 +30,11 @@ const signup = async (req, res) => {
 
         await fs.rename(oldPath, newPath)
 
-        const avatarUrl = path.join('public', 'avatars', filename)
-        
-        await Jimp.read(avatarUrl)
-            .then((avatar) => {
-                return avatar
-                    .resize(250, 250) // resize
-            })
-            .catch((err) => {
-                throw new Error;
-            }
-            )
+        const image = await Jimp.read(newPath);
+        image.resize(250, 250);
+        await image.writeAsync(newPath);
+
+        const avatarUrl = path.join('avatars', filename)
 
         const newUser = await User.create({ ...req.body, avatarUrl, password: hashPassword });
 
@@ -121,7 +115,11 @@ const updateAvatar = async (req, res) => {
 
     await fs.rename(oldPath, newPath)
 
-    const avatarUrl = path.join('public', 'avatars', filename)
+    const image = await Jimp.read(newPath);
+    image.resize(250, 250);
+    await image.writeAsync(newPath);
+
+    const avatarUrl = path.join('avatars', filename)
 
     await User.findOneAndUpdate({email}, { avatarUrl }, {new: true})
     
