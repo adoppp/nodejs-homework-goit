@@ -3,8 +3,14 @@ import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
 import User from "../models/User.js";
+import fs from 'fs/promises';
+import path from "path";
+import gravatar from 'gravatar'
+import Jimp from "jimp";
 
 const { JWT_SECRET } = process.env;
+
+const posterPath = path.resolve('public', 'avatars')
 
 const signup = async (req, res) => {
     const { email, password } = req.body;
@@ -16,7 +22,38 @@ const signup = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({...req.body, password: hashPassword});
+
+    if (req.file) {
+        const { path: oldPath, filename } = req.file;
+
+        const newPath = path.join(posterPath, filename)
+
+        await fs.rename(oldPath, newPath)
+
+        const avatarUrl = path.join('public', 'avatars', filename)
+        
+        await Jimp.read(avatarUrl)
+            .then((avatar) => {
+                return avatar
+                    .resize(250, 250) // resize
+            })
+            .catch((err) => {
+                throw new Error;
+            }
+            )
+
+        const newUser = await User.create({ ...req.body, avatarUrl, password: hashPassword });
+
+        res.status(201).json({
+            user: {
+                email: newUser.email,
+                subscription: newUser.subscription,
+            }
+        })
+
+    }
+
+    const newUser = await User.create({ ...req.body, avatarUrl: gravatar.url(email, {s: 250}), password: hashPassword });
 
     res.status(201).json({
         user: {
@@ -75,9 +112,28 @@ const getCurrent = async (req, res) => {
     })
 }
 
+const updateAvatar = async (req, res) => {
+    const { email } = req.user;
+
+    const { path: oldPath, filename } = req.file;
+
+    const newPath = path.join(posterPath, filename)
+
+    await fs.rename(oldPath, newPath)
+
+    const avatarUrl = path.join('public', 'avatars', filename)
+
+    await User.findOneAndUpdate({email}, { avatarUrl }, {new: true})
+    
+    res.status(200).json({
+        avatarUrl
+    })
+}
+
 export default {
     signup: ctrlWrapper(signup),
     signin: ctrlWrapper(signin),
     getCurrent: ctrlWrapper(getCurrent),
     signOut: ctrlWrapper(signOut),
+    updateAvatar: ctrlWrapper(updateAvatar),
 }
