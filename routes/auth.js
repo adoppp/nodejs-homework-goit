@@ -11,9 +11,9 @@ const validateSignupSchema = validateBody(userAddSchemaSignup);
 
 const authRouter = express.Router();
 
-authRouter.post('/users/register', isEmptyBody, validateSigninSchema, authController.signup)
-authRouter.post('/users/login', isEmptyBody, validateSignupSchema, authController.signin)
-authRouter.get('/users/current', authenticate, authController.getCurrent)
-authRouter.post('/users/logout', authenticate, authController.signOut)
+authRouter.post('/register', isEmptyBody, validateSigninSchema, authController.signup)
+authRouter.post('/login', isEmptyBody, validateSignupSchema, authController.signin)
+authRouter.get('/current', authenticate, authController.getCurrent)
+authRouter.post('/logout', authenticate, authController.signOut)
 
 export default authRouter;
