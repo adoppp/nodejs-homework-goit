@@ -6,6 +6,7 @@ import { isValidId } from "../middlewares/IsValidId.js"
 import authenticate from '../middlewares/authenticate.js'
 import { contactAddSchema, contactFavotiteSchema } from "../models/Contact.js"
 import { validateBody } from "../middlewares/validateBody.js"
+import upload from "../middlewares/upload.js"
 
 const validateAddSchema = validateBody(contactAddSchema);
 const validateFavoriteSchema = validateBody(contactFavotiteSchema);
